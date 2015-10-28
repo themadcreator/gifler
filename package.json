@@ -5,7 +5,7 @@
   "main"        : "gifler.js",
   "scripts"     : {
     "compile"     : "./node_modules/.bin/browserify -t coffeeify --extension=\".coffee\" src/gifler.coffee > gifler.js",
-    "build"       : "npm run compile && ./node_modules/.bin/uglifyjs --compress --mangle --screw-ie8 --preamble '/** gifler.js | github.com/themadcreator/gifler | @license: Apache 2.0 */' -- gifler.js > gifler.min.js",
+    "build"       : "npm run compile && ./node_modules/.bin/uglifyjs --compress --mangle --screw-ie8 --preamble '/** gifler.js | github.com/themadcreator/gifler | @license: Apache-2.0 */' -- gifler.js > gifler.min.js",
     "postbuild"   : "cp gifler.min.js site/assets/gifler.js",
     "site-prep"   : "npm run build && rm -rf site-dist",
     "site"        : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith-watch.json",
