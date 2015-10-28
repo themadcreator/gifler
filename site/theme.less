@@ -1,0 +1,121 @@
+@import "_constants.less";
+
+a,div {
+  box-sizing : border-box;
+}
+
+a {
+  text-decoration : none;
+}
+
+h1, h2, h3, h4 {
+  color       : @color-highlight;
+  box-sizing  : border-box;
+  font-weight : 700;
+  padding     : 0px 0px;
+  margin      : 0px 0px;
+}
+
+body {
+  font-family : "Roboto";
+  text-align  : center;
+  background  : @color-bg;
+  color       : @color-text;
+  margin      : 0;
+  .user-select(none);
+
+  > div {
+    font-size   : 16px;
+    line-height : 1em;
+  }
+}
+
+.nav-top {
+  width            : 100%;
+  height           : @med-size;
+  background-color : @color-nav;
+
+  .nav-left {
+    float       : left;
+    margin-left : 20px;
+    @media only screen and (max-device-width: 480px){
+      margin-left : 0px;
+    }
+  }
+
+  .nav-right {
+    float        : right;
+    margin-right : 20px;
+    @media only screen and (max-device-width: 480px){
+      margin-right : 0px;
+    }
+  }
+
+  .devicons {
+    font-size   : 50px;
+    line-height : @med-size;
+  }
+
+  a {
+    display     : inline-block;
+    padding     : 0px @pad;
+    color       : white;
+    line-height : @med-size;
+    height      : @med-size;
+    border-bottom : 5px solid transparent;
+
+    &:hover {
+      border-bottom-color : white;
+    }
+  }
+}
+
+.content-row {
+  text-align : center;
+  background : @color-content;
+}
+
+.content {
+  display    : inline-block;
+  text-align : left;
+  padding    : @pad 0px;
+  width      : @content-width;
+  max-width  : 100vw;
+
+  h2 {
+    font-size   : @min-size;
+    line-height : @min-size;
+    padding     : @pad*2 0px @pad 0px;
+  }
+
+  .flavor {
+    font-weight   : 300;
+    line-height   : 1.2em;
+    margin-bottom : 2em;
+  }
+}
+
+.block {
+  padding-left  : @pad;
+  padding-right : @pad;
+}
+
+.button {
+  padding    : (@pad) (@pad * 2);
+  background : @color-nav;
+  color      : white;
+  cursor     : pointer;
+  display    : inline-block;
+
+  &:hover {
+    background : lighten(@color-nav, 30%);
+  }
+}
+
+.footer {
+  margin : (@pad * 2) 0px;
+  color  : @color-nav;
+  a {
+    color : @color-nav;
+  }
+}

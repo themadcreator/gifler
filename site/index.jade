@@ -1,0 +1,49 @@
+---
+examples :
+  -
+    title       : 'Hello, Gifler!'
+    key         : 'running-pikachu'
+    description : 'Getting started is easy! Just call the gifler function to load a GIF. Then run the animation in a canvas using the <b>.animate()</b> method. The method <b>.animate()</b> accepts a canvas DOM element or a string selector to a canvas element.'
+    source      : '_examples/simple.js'
+  -
+    title       : 'Custom Rendering'
+    key         : 'rainbow-pikachus'
+    description : 'Gifler makes it easy to manipulate the underlying frames from the GIF. Just call the <b>.frames()</b> method with a canvas selector and a callback that will be called when each frame should be renderd. Gifler handles all the timing calculations and GIF transition logic. Just put the pixels you want to see into the canvas.'
+    source      : '_examples/rainbow.js'
+---
+
+extend _layout.jade
+
+block style
+  link(rel="stylesheet" href="/index.css")
+
+mixin example(example)
+  //- header label
+  .block
+    h2 #{example.title}
+    .flavor !{example.description}
+
+  //- canvas
+  .canvas-wrapper: canvas(class="#{example.key}")
+  script !{raw(example.source)}
+
+  //- code block
+  .block: pre: code(class="#{example.key}").javascript #{raw(example.source)}
+
+
+block hero
+  .hero.row
+    h1 Gifler
+    h2 Render GIF frames to #{'<canvas>'}
+    a(href="/"): .button.download Download
+
+block content
+
+  for example in examples
+    +example(example)
+
+  .tech-icons
+    span.devicons.devicons-coffeescript(title="CoffeeScript")
+    span.devicons.devicons-javascript_badge(title="Javascript")
+    span.devicons.devicons-less(title="less")
+    span.devicons.devicons-npm(title="npm")

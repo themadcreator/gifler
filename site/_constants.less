@@ -1,0 +1,29 @@
+@color-bg      : @color-hero-bg;
+@color-content : white;
+@color-text    : #555;
+@color-header  : #45ADA8;
+
+@color-highlight : black; //#0D7693;
+@color-nav       : #BD1550;
+@color-hero-bg   : #490A3D;
+@color-hero-fg   : white;
+
+@min-size      : 40px;
+@med-size      : 60px;
+@pad           : 15px;
+@content-width : 700px;
+
+.user-select(@value){
+  -webkit-touch-callout : @value;
+  -webkit-user-select   : @value;
+  -khtml-user-select    : @value;
+  -moz-user-select      : @value;
+  -ms-user-select       : @value;
+  user-select           : @value;
+}
+
+.table-center(){
+    display        : table-cell;
+  text-align     : center;
+  vertical-align : middle;
+}

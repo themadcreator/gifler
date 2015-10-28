@@ -1,0 +1,18 @@
+{
+  "nyancat" : {
+    "url"    : "gif/nyan.gif",
+    "source" : "http://www.wired.co.uk/"
+  },
+  "florian" : {
+    "url"    : "gif/florian-8.gif",
+    "source" : "Florian de Looij"
+  },
+  "pots" : {
+    "url"    : "gif/pots.gif",
+    "source" : "http://www.weshootfood.net/"
+  },
+  "toroid" : {
+    "url"    : "gif/toroid.gif",
+    "source" : "David Ope"
+  }
+}

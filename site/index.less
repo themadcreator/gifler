@@ -1,0 +1,63 @@
+@import "_constants.less";
+
+.hero {
+  width            : 100vw;
+  height           : 66vh;
+  background-color : @color-hero-bg;
+  .table-center();
+
+  h1 {
+    color       : @color-hero-fg;
+    font-size   : 140px;
+    line-height : 150px;
+    font-weight : 100;
+    margin-top  : @pad;
+  }
+
+  h2 {
+    color       : fade(@color-hero-fg, 50%);
+    font-size   : 20px;
+    font-weight : normal;
+  }
+
+  .download {
+    margin-top    : 50px;
+    margin-bottom : @pad;
+    padding       : 0px 0px;
+    width         : 200px;
+    height        : 60px;
+    line-height   : 60px;
+    font-size     : 24px;
+  }
+}
+
+.canvas-wrapper {
+  max-width : 100vw;
+  padding   : @pad @pad;
+
+  canvas {
+    max-width : 100%;
+  }
+
+  canvas.rainbow-pikachus {
+    width  : 100%;
+    height : 100px;
+  }
+}
+
+pre code {
+  padding    : 15px 15px !important;
+  box-sizing : border-box;
+  overflow-x : scroll !important;
+  .user-select(text);
+}
+
+.tech-icons {
+  font-size  : 50px;
+  text-align : center;
+  margin     : (@pad * 2) 0px;
+  color      : #AAA;
+  span {
+    margin : 0px @pad;
+  }
+}

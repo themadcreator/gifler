@@ -1,0 +1,43 @@
+---
+base     : 'assets/gif'
+examples :
+  nyancat :
+    url    : 'nyan.gif'
+    source : 'http://www.wired.co.uk/'
+  florian :
+    url    : 'florian-8.gif'
+    source : 'Florian de Looij'
+  pots :
+    url    : 'pots.gif'
+    source : 'http://www.weshootfood.net/'
+  toroid :
+    url    : 'toroid.gif'
+    source : 'David Ope'
+---
+
+extend _layout.jade
+
+block style
+  link(rel="stylesheet" href="/examples.css")
+
+mixin comparison(example, key)
+  tr
+    td: img(class=key)
+    td: canvas(class=key)
+  tr
+    td(colspan="2")
+      .source Source: #{example.source}
+      script.
+        var url = "#{base}/#{example.url}";
+        var selector = ".#{key}";
+        gifler(url).animate(document.querySelector('canvas' + selector));
+        document.querySelector('img' + selector).src = url;
+
+block content
+  table.comparisons
+    tr
+      th: h3 #{'<img>'}
+      th: h3 #{'<canvas>'}
+
+    for example, key in examples
+      +comparison(example, key)

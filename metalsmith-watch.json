@@ -1,0 +1,33 @@
+{
+  "source"      : "site",
+  "destination" : "site-dist",
+  "plugins"     : {
+    "metalsmith-less" : {
+      "render" : {
+        "paths" : ["site"]
+      }
+    },
+    "metalsmith-ignore" : [
+      "**/_*",
+      "**/_*/**/*",
+      "**/*.less"
+    ],
+    "metalsmith-assets" : {
+      "source"      : "site/assets",
+      "destination" : "assets"
+    },
+    "metalsmith-raw"  : true,
+    "metalsmith-jade" : {
+      "pretty"      : true,
+      "useMetadata" : true
+    },
+    "metalsmith-serve" : {
+      "port" : 9000
+    },
+    "metalsmith-watch" : {
+      "paths" : {
+        "${source}/**/*" : "**/*"
+      }
+    }
+  }
+}
