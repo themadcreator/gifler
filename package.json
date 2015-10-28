@@ -10,7 +10,7 @@
     "site-prep"   : "npm run build && rm -rf site-dist",
     "site"        : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith-watch.json",
     "site-build"  : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith.json",
-    "deploy-site" : "git subtree push --prefix site-dist origin gh-pages"
+    "site-deploy" : "git subtree push --prefix site-dist origin gh-pages"
   },
   "author"       : "themadcreator@github",
   "license"      : "Apache-2.0",
