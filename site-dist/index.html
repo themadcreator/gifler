@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:100,300,400,700,900">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/devicons/1.8.0/css/devicons.min.css">
+    <link rel="stylesheet" href="assets/lib/monokai_sublime.css">
+    <link rel="stylesheet" href="/theme.css">
+    <link rel="stylesheet" href="/index.css">
+    <script type="text/javascript" src="assets/gifler.js"></script>
+    <script type="text/javascript" src="assets/lib/highlight.pack.js"></script>
+    <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body>
+    <div class="nav-top row">
+      <div class="nav-left"><a href="/">Gifler</a><a href="/examples.html">examples</a></div>
+      <div class="nav-right"><a href="https://github.com/themadcreator/gifler"><span class="devicons devicons-github_full"></span></a><a href="https://www.npmjs.com/package/gifler"><span class="devicons devicons-npm"></span></a></div>
+    </div>
+    <div class="hero row">
+      <h1>Gifler</h1>
+      <h2>Render GIF frames to &lt;canvas&gt;</h2><a href="https://raw.githubusercontent.com/themadcreator/gifler/master/gifler.min.js">
+        <div class="button download">Download</div></a>
+    </div>
+    <div class="content-row row">
+      <div class="content">
+        <div class="block">
+          <h2>Hello, Gifler!</h2>
+          <div class="flavor">Getting started is easy! Just call the gifler function to load a GIF. Then run the animation in a canvas using the <b>.animate()</b> method. The method <b>.animate()</b> accepts a canvas DOM element or a string selector to a canvas element.</div>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas class="running-pikachu"></canvas>
+        </div>
+        <script>gifler('assets/gif/run.gif').animate('canvas.running-pikachu')</script>
+        <div class="block">
+          <pre><code class="running-pikachu javascript">gifler('assets/gif/run.gif').animate('canvas.running-pikachu')</code></pre>
+        </div>
+        <div class="block">
+          <h2>Custom Rendering</h2>
+          <div class="flavor">Gifler makes it easy to manipulate the underlying frames from the GIF. Just call the <b>.frames()</b> method with a canvas selector and a callback that will be called when each frame should be renderd. Gifler handles all the timing calculations and GIF transition logic. Just put the pixels you want to see into the canvas.</div>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas class="rainbow-pikachus"></canvas>
+        </div>
+        <script>var frames = 0;
+
+function onDrawFrame(ctx, frame) {
+  // Match width/height to remove distortion
+  ctx.canvas.width  = ctx.canvas.offsetWidth;
+  ctx.canvas.height = ctx.canvas.offsetHeight;
+
+  // Determine how many pikachus will fit on screen
+  var n = Math.floor((ctx.canvas.width)/150)
+
+  for(var x = 0; x < n; x++) {
+    // Draw a pikachu
+    var left = x * 150;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(frame.buffer, frame.x + left, frame.y, 150, 100);
+
+    // Composite a color
+    var hue = (frames * 10 + x * 50) % 360;
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.fillStyle = 'hsla(' + hue + ', 100%, 50%, 0.5)';
+    ctx.fillRect(left, 0, 150, this.height);
+  }
+  frames++;
+}
+
+// Load and parse the GIF, returning an Animator
+gifler('assets/gif/run.gif')
+  .frames('canvas.rainbow-pikachus', onDrawFrame);</script>
+        <div class="block">
+          <pre><code class="rainbow-pikachus javascript">var frames = 0;
+
+function onDrawFrame(ctx, frame) {
+  // Match width/height to remove distortion
+  ctx.canvas.width  = ctx.canvas.offsetWidth;
+  ctx.canvas.height = ctx.canvas.offsetHeight;
+
+  // Determine how many pikachus will fit on screen
+  var n = Math.floor((ctx.canvas.width)/150)
+
+  for(var x = 0; x &lt; n; x++) {
+    // Draw a pikachu
+    var left = x * 150;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(frame.buffer, frame.x + left, frame.y, 150, 100);
+
+    // Composite a color
+    var hue = (frames * 10 + x * 50) % 360;
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.fillStyle = 'hsla(' + hue + ', 100%, 50%, 0.5)';
+    ctx.fillRect(left, 0, 150, this.height);
+  }
+  frames++;
+}
+
+// Load and parse the GIF, returning an Animator
+gifler('assets/gif/run.gif')
+  .frames('canvas.rainbow-pikachus', onDrawFrame);</code></pre>
+        </div>
+        <div class="tech-icons"><span title="CoffeeScript" class="devicons devicons-coffeescript"></span><span title="Javascript" class="devicons devicons-javascript_badge"></span><span title="less" class="devicons devicons-less"></span><span title="npm" class="devicons devicons-npm"></span></div>
+      </div>
+    </div>
+    <div class="footer">made by <a href="https://github.com/themadcreator/">themadcreator@github</a></div>
+  </body>
+</html>
