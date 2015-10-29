@@ -15,7 +15,7 @@ gifler = (url) ->
   return new Api(xhr)
 
 class Api
-  constuctor : (@xhr) ->
+  constructor : (@xhr) ->
 
   get : (callback) ->
     @xhr.onload = wrapXhrCallback(callback)
