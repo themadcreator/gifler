@@ -1,40 +1,39 @@
 {
-  "name": "gifler",
-  "version": "0.2.0",
-  "description": "Render GIF frames to <canvas>",
-  "main": "gifler.bare.js",
-  "scripts": {
-    "compile": "./node_modules/.bin/coffee --compile --bare --print src/gifler.coffee > gifler.bare.js",
-    "postcompile": "./node_modules/.bin/browserify gifler.bare.js > gifler.bundle.js",
-    "build": "npm run compile && ./node_modules/.bin/uglifyjs --compress --mangle --screw-ie8 --preamble '/** gifler.js | github.com/themadcreator/gifler | @license: Apache-2.0 */' -- gifler.bundle.js > gifler.min.js",
-    "postbuild": "cp gifler.min.js site/assets/gifler.js",
-    "site-prep": "npm run build && rm -rf gh-pages",
-    "site": "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith-watch.json",
-    "site-build": "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith.json",
-    "site-deploy": "git subtree push --prefix gh-pages origin gh-pages",
-    "deploy": "npm version minor -m \"Update version to %s\" ",
-    "postdeploy": "git push && git push --tags"
+  "name"        : "gifler",
+  "version"     : "0.2.0",
+  "description" : "Render GIF frames to <canvas>",
+  "main"        : "gifler.bare.js",
+  "scripts"     : {
+    "compile"     : "./node_modules/.bin/coffee --compile --bare --print src/gifler.coffee > gifler.bare.js",
+    "postcompile" : "./node_modules/.bin/browserify gifler.bare.js > gifler.bundle.js",
+    "build"       : "npm run compile && ./node_modules/.bin/uglifyjs --compress --mangle --screw-ie8 --preamble '/** gifler.js | github.com/themadcreator/gifler | @license: Apache-2.0 */' -- gifler.bundle.js > gifler.min.js",
+    "postbuild"   : "cp gifler.min.js site/assets/gifler.js",
+    "site-prep"   : "npm run build && rm -rf gh-pages",
+    "site"        : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith-watch.json",
+    "site-build"  : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith.json",
+    "site-deploy" : "git subtree push --prefix gh-pages origin gh-pages",
+    "deploy"      : "npm version minor -m \"Update version to %s\" ",
+    "postdeploy"  : "git push && git push --tags"
   },
-  "author": "themadcreator@github",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "omggif": "1.0.x"
+  "author"       : "themadcreator@github",
+  "license"      : "Apache-2.0",
+  "dependencies" : {
+    "omggif" : "1.0.x"
   },
   "devDependencies": {
-    "ast-types": "0.8.13",
-    "recast": "0.10.34",
-    "js-yaml": "3.4.3",
-    "browserify": "11.x.x",
-    "coffee-script": "1.10.0",
-    "coffeeify": "1.x.x",
-    "metalsmith": "2.1.0",
-    "metalsmith-assets": "0.1.0",
-    "metalsmith-ignore": "0.1.2",
-    "metalsmith-jade": "2.0.2",
-    "metalsmith-less": "2.0.0",
-    "metalsmith-raw": "0.2.0",
-    "metalsmith-serve": "0.0.4",
-    "metalsmith-watch": "1.0.1",
-    "uglify-js": "2.x.x"
+    "ast-types"         : "0.8.13",
+    "recast"            : "0.10.34",
+    "js-yaml"           : "3.4.3",
+    "browserify"        : "11.x.x",
+    "coffee-script"     : "1.10.0",
+    "metalsmith"        : "2.1.0",
+    "metalsmith-assets" : "0.1.0",
+    "metalsmith-ignore" : "0.1.2",
+    "metalsmith-jade"   : "2.0.2",
+    "metalsmith-less"   : "2.0.0",
+    "metalsmith-raw"    : "0.2.0",
+    "metalsmith-serve"  : "0.0.4",
+    "metalsmith-watch"  : "1.0.1",
+    "uglify-js"         : "2.x.x"
   }
 }
