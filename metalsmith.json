@@ -1,6 +1,6 @@
 {
   "source"      : "site",
-  "destination" : "site-dist",
+  "destination" : "gh-pages",
   "plugins"     : {
     "metalsmith-less" : {
       "render" : {

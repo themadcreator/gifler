@@ -7,10 +7,10 @@
     "compile"     : "./node_modules/.bin/browserify -t coffeeify --extension=\".coffee\" src/gifler.coffee > gifler.js",
     "build"       : "npm run compile && ./node_modules/.bin/uglifyjs --compress --mangle --screw-ie8 --preamble '/** gifler.js | github.com/themadcreator/gifler | @license: Apache-2.0 */' -- gifler.js > gifler.min.js",
     "postbuild"   : "cp gifler.min.js site/assets/gifler.js",
-    "site-prep"   : "npm run build && rm -rf site-dist",
+    "site-prep"   : "npm run build && rm -rf gh-pages",
     "site"        : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith-watch.json",
     "site-build"  : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith.json",
-    "site-deploy" : "git subtree push --prefix site-dist origin gh-pages"
+    "site-deploy" : "git subtree push --prefix gh-pages origin gh-pages"
   },
   "author"       : "themadcreator@github",
   "license"      : "Apache-2.0",
