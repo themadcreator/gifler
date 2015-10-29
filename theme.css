@@ -68,7 +68,7 @@ body > div {
   padding: 0px 15px;
 }
 .nav-top a:hover {
-  border-bottom-color: brighten(#BD1550, 10%);
+  border-bottom-color: #eb4d84;
 }
 .content-row {
   text-align: center;
@@ -103,7 +103,7 @@ body > div {
   display: inline-block;
 }
 .button:hover {
-  background: #f07ba4;
+  background: #eb4d84;
 }
 .footer {
   margin: 30px 0px;
