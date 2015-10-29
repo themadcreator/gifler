@@ -1,10 +1,27 @@
----
----
-
 extend _layout.jade
 
 block style
   link(rel="stylesheet" href="docs.css")
 
+mixin documentation(doc)
+  a(name=doc.head href="##{doc.head}")
+    h2 #{doc.head}
+
+  - if(doc.text)
+    for text in doc.text
+      p.text !{text}
+
+  - if(doc.args)
+    h4 Arguments
+    table.arguments
+      for description, name in doc.args
+        tr
+          td.name #{name}
+          td.desc #{description}
+
+  - if(doc.return)
+    h4 #[span Returns] #{doc.return}
+
 block content
-  h1 API docs coming soon
+  for doc in docs
+    +documentation(doc)

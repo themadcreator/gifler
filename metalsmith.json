@@ -16,7 +16,10 @@
       "source"      : "site/assets",
       "destination" : "assets"
     },
-    "metalsmith-raw"  : true,
+    "metalsmith-raw" : true,
+    "./metalsmith-comment-docs.js"  : {
+      "docs" : "./gifler.bare.js"
+    },
     "metalsmith-jade" : {
       "pretty"      : true,
       "useMetadata" : true

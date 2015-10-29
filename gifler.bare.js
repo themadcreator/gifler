@@ -5,10 +5,15 @@ var Animator, Api, GifReader, createBufferCanvas, decodeFrames, getCanvasElement
 GifReader = require('omggif').GifReader;
 
 
-/*
----
-d: 'Returns a gifler API instance object'
----
+/*---
+head : 'gifler()'
+text :
+  - This is the main entrypoint to the library.
+  - Prepares an XHR request to load the GIF file.
+  - Returns an API instance for interacting with the library.
+args : 
+  url : 'URL to .gif file'
+return : 'a gifler Api instance object'
  */
 
 gifler = function(url) {
@@ -24,11 +29,16 @@ Api = (function() {
     this.xhr = xhr1;
   }
 
-  Api.prototype.get = function(callback) {
-    this.xhr.onload = wrapXhrCallback(callback);
-    this.xhr.send();
-    return this;
-  };
+
+  /*---
+  head : 'api.animate()'
+  text :
+    - >
+      Renders the loaded GIF into the canvas matching
+      the timing and effects of using and img tag.
+  args : 
+    selector : 'A <canvas> element or query selector for a <canvas> element.'
+   */
 
   Api.prototype.animate = function(selector) {
     var canvas;
@@ -40,6 +50,23 @@ Api = (function() {
     return this;
   };
 
+
+  /*---
+  head : 'api.frames()'
+  text :
+    - >
+      Runs the animation on the loaded GIF, but passes the
+      canvas context and GIF frame to the <b>onDrawFrame</b>
+      callback for rendering.
+    - >
+      This gives you complete control of how the frame is drawn
+      into the canvas context.
+  args : 
+    selector           : 'A <canvas> element or query selector for a <canvas> element.'
+    onDrawFrame        : 'A callback that will be invoked when each frame should be drawn into the canvas. see Animator.onDrawFrame.'
+    setCanvasDimesions : 'OPTIONAL. If true, the canvas''s size will be set to the dimension of the loaded GIF. default: false.'
+   */
+
   Api.prototype.frames = function(selector, onDrawFrame, setCanvasDimesions) {
     var canvas;
     if (setCanvasDimesions == null) {
@@ -50,6 +77,25 @@ Api = (function() {
       animator.onDrawFrame = onDrawFrame;
       return animator.animateInCanvas(canvas, setCanvasDimesions);
     });
+    this.xhr.send();
+    return this;
+  };
+
+
+  /*---
+  head : 'api.get()'
+  text :
+    - >
+      To get even more control, and for your convenience,
+      this method allows you to access gifler's Animator
+      object. The animator will be in an unstarted state,
+      but can be started with a call to <b>animator.animateInCanvas()</b>
+  args : 
+    callback : 'A function which takes as its argument a gifler Animator instance object'
+   */
+
+  Api.prototype.get = function(callback) {
+    this.xhr.onload = wrapXhrCallback(callback);
     this.xhr.send();
     return this;
   };

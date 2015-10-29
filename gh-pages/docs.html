@@ -18,8 +18,59 @@
       <div class="nav-right"><a href="https://github.com/themadcreator/gifler"><span class="devicons devicons-github_full"></span></a><a href="https://www.npmjs.com/package/gifler"><span class="devicons devicons-npm"></span></a></div>
     </div>
     <div class="content-row row">
-      <div class="content">
-        <h1>API docs coming soon</h1>
+      <div class="content"><a name="gifler()" href="#gifler()">
+          <h2>gifler()</h2></a>
+        <p class="text">This is the main entrypoint to the library.</p>
+        <p class="text">Prepares an XHR request to load the GIF file.</p>
+        <p class="text">Returns an API instance for interacting with the library.</p>
+        <h4>Arguments</h4>
+        <table class="arguments">
+          <tr>
+            <td class="name">url</td>
+            <td class="desc">URL to .gif file</td>
+          </tr>
+        </table>
+        <h4><span>Returns</span> a gifler Api instance object</h4><a name="api.animate()" href="#api.animate()">
+          <h2>api.animate()</h2></a>
+        <p class="text">Renders the loaded GIF into the canvas matching the timing and effects of using and img tag.
+</p>
+        <h4>Arguments</h4>
+        <table class="arguments">
+          <tr>
+            <td class="name">selector</td>
+            <td class="desc">A &lt;canvas&gt; element or query selector for a &lt;canvas&gt; element.</td>
+          </tr>
+        </table><a name="api.frames()" href="#api.frames()">
+          <h2>api.frames()</h2></a>
+        <p class="text">Runs the animation on the loaded GIF, but passes the canvas context and GIF frame to the <b>onDrawFrame</b> callback for rendering.
+</p>
+        <p class="text">This gives you complete control of how the frame is drawn into the canvas context.
+</p>
+        <h4>Arguments</h4>
+        <table class="arguments">
+          <tr>
+            <td class="name">selector</td>
+            <td class="desc">A &lt;canvas&gt; element or query selector for a &lt;canvas&gt; element.</td>
+          </tr>
+          <tr>
+            <td class="name">onDrawFrame</td>
+            <td class="desc">A callback that will be invoked when each frame should be drawn into the canvas. see Animator.onDrawFrame.</td>
+          </tr>
+          <tr>
+            <td class="name">setCanvasDimesions</td>
+            <td class="desc">OPTIONAL. If true, the canvas's size will be set to the dimension of the loaded GIF. default: false.</td>
+          </tr>
+        </table><a name="api.get()" href="#api.get()">
+          <h2>api.get()</h2></a>
+        <p class="text">To get even more control, and for your convenience, this method allows you to access gifler's Animator object. The animator will be in an unstarted state, but can be started with a call to <b>animator.animateInCanvas()</b>
+</p>
+        <h4>Arguments</h4>
+        <table class="arguments">
+          <tr>
+            <td class="name">callback</td>
+            <td class="desc">A function which takes as its argument a gifler Animator instance object</td>
+          </tr>
+        </table>
       </div>
     </div>
     <div class="footer">made by <a href="https://github.com/themadcreator/">themadcreator@github</a></div>

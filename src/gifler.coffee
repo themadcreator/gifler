@@ -1,11 +1,17 @@
 {GifReader} = require 'omggif'
 
+# For more on the file format for GIFs
 # http://www.w3.org/Graphics/GIF/spec-gif89a.txt
 
-###
----
-d: 'Returns a gifler API instance object'
----
+###---
+head : 'gifler()'
+text :
+  - This is the main entrypoint to the library.
+  - Prepares an XHR request to load the GIF file.
+  - Returns an API instance for interacting with the library.
+args : 
+  url : 'URL to .gif file'
+return : 'a gifler Api instance object'
 ###
 gifler = (url) ->
   # Prepare XHR
@@ -17,17 +23,36 @@ gifler = (url) ->
 class Api
   constructor : (@xhr) ->
 
-  get : (callback) ->
-    @xhr.onload = wrapXhrCallback(callback)
-    @xhr.send()
-    return @
-
+  ###---
+  head : 'api.animate()'
+  text :
+    - >
+      Renders the loaded GIF into the canvas matching
+      the timing and effects of using and img tag.
+  args : 
+    selector : 'A <canvas> element or query selector for a <canvas> element.'
+  ###
   animate : (selector) ->
     canvas = getCanvasElement(selector)
     @xhr.onload = wrapXhrCallback((animator) -> return animator.animateInCanvas(canvas))
     @xhr.send()
     return @
 
+  ###---
+  head : 'api.frames()'
+  text :
+    - >
+      Runs the animation on the loaded GIF, but passes the
+      canvas context and GIF frame to the <b>onDrawFrame</b>
+      callback for rendering.
+    - >
+      This gives you complete control of how the frame is drawn
+      into the canvas context.
+  args : 
+    selector           : 'A <canvas> element or query selector for a <canvas> element.'
+    onDrawFrame        : 'A callback that will be invoked when each frame should be drawn into the canvas. see Animator.onDrawFrame.'
+    setCanvasDimesions : 'OPTIONAL. If true, the canvas''s size will be set to the dimension of the loaded GIF. default: false.'
+  ###
   frames : (selector, onDrawFrame, setCanvasDimesions = false) ->
     canvas = getCanvasElement(selector)
     @xhr.onload = wrapXhrCallback((animator) ->
@@ -37,6 +62,21 @@ class Api
     @xhr.send()
     return @
 
+  ###---
+  head : 'api.get()'
+  text :
+    - >
+      To get even more control, and for your convenience,
+      this method allows you to access gifler's Animator
+      object. The animator will be in an unstarted state,
+      but can be started with a call to <b>animator.animateInCanvas()</b>
+  args : 
+    callback : 'A function which takes as its argument a gifler Animator instance object'
+  ###
+  get : (callback) ->
+    @xhr.onload = wrapXhrCallback(callback)
+    @xhr.send()
+    return @
 
 wrapXhrCallback = (callback) ->
   return (e) -> callback new Animator(new GifReader(new Uint8Array(@response)))
