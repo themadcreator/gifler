@@ -1,0 +1,35 @@
+h3 {
+  font-size: 30px;
+  line-height: 40px;
+}
+table.comparisons {
+  width: 100%;
+  table-layout: fixed;
+  text-align: center;
+}
+table.comparisons td img {
+  width: 300px;
+  height: 300px;
+}
+table.comparisons td canvas {
+  width: 300px;
+  height: 300px;
+}
+@media only screen and (max-device-width: 480px) {
+  table.comparisons td img {
+    width: 150px;
+    height: 150px;
+  }
+  table.comparisons td canvas {
+    width: 150px;
+    height: 150px;
+  }
+}
+.source {
+  font-size: 14px;
+  color: #AAA;
+  float: right;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  clear: both;
+}

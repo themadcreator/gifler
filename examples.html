@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:100,300,400,700,900">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/devicons/1.8.0/css/devicons.min.css">
+    <link rel="stylesheet" href="assets/lib/monokai_sublime.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="examples.css">
+    <script type="text/javascript" src="assets/gifler.js"></script>
+    <script type="text/javascript" src="assets/lib/highlight.pack.js"></script>
+    <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body>
+    <div class="nav-top row">
+      <div class="nav-left"><a href="./">Gifler</a><a href="examples.html">examples</a></div>
+      <div class="nav-right"><a href="https://github.com/themadcreator/gifler"><span class="devicons devicons-github_full"></span></a><a href="https://www.npmjs.com/package/gifler"><span class="devicons devicons-npm"></span></a></div>
+    </div>
+    <div class="content-row row">
+      <div class="content">
+        <table class="comparisons">
+          <tr>
+            <th>
+              <h3>&lt;img&gt;</h3>
+            </th>
+            <th>
+              <h3>&lt;canvas&gt;</h3>
+            </th>
+          </tr>
+          <tr>
+            <td><img class="nyancat"/></td>
+            <td>
+              <canvas class="nyancat"></canvas>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="source">Source: http://www.wired.co.uk/</div>
+              <script>
+                var url = "assets/gif/nyan.gif";
+                var selector = ".nyancat";
+                gifler(url).animate(document.querySelector('canvas' + selector));
+                document.querySelector('img' + selector).src = url;
+                
+              </script>
+            </td>
+          </tr>
+          <tr>
+            <td><img class="florian"/></td>
+            <td>
+              <canvas class="florian"></canvas>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="source">Source: Florian de Looij</div>
+              <script>
+                var url = "assets/gif/florian-8.gif";
+                var selector = ".florian";
+                gifler(url).animate(document.querySelector('canvas' + selector));
+                document.querySelector('img' + selector).src = url;
+                
+              </script>
+            </td>
+          </tr>
+          <tr>
+            <td><img class="pots"/></td>
+            <td>
+              <canvas class="pots"></canvas>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="source">Source: http://www.weshootfood.net/</div>
+              <script>
+                var url = "assets/gif/pots.gif";
+                var selector = ".pots";
+                gifler(url).animate(document.querySelector('canvas' + selector));
+                document.querySelector('img' + selector).src = url;
+                
+              </script>
+            </td>
+          </tr>
+          <tr>
+            <td><img class="toroid"/></td>
+            <td>
+              <canvas class="toroid"></canvas>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="source">Source: David Ope</div>
+              <script>
+                var url = "assets/gif/toroid.gif";
+                var selector = ".toroid";
+                gifler(url).animate(document.querySelector('canvas' + selector));
+                document.querySelector('img' + selector).src = url;
+                
+              </script>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="footer">made by <a href="https://github.com/themadcreator/">themadcreator@github</a></div>
+  </body>
+</html>
