@@ -1,7 +1,7 @@
 {
   "name"        : "gifler",
   "version"     : "0.1.0",
-  "description" : "Render GIF frames to canvas",
+  "description" : "Render GIF frames to <canvas>",
   "main"        : "gifler.js",
   "scripts"     : {
     "compile"     : "./node_modules/.bin/browserify -t coffeeify --extension=\".coffee\" src/gifler.coffee > gifler.js",
@@ -10,7 +10,9 @@
     "site-prep"   : "npm run build && rm -rf gh-pages",
     "site"        : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith-watch.json",
     "site-build"  : "npm run site-prep && ./node_modules/.bin/metalsmith --config metalsmith.json",
-    "site-deploy" : "git subtree push --prefix gh-pages origin gh-pages"
+    "site-deploy" : "git subtree push --prefix gh-pages origin gh-pages",
+    "deploy"      : "npm version minor -m \"Update version to %s\" ",
+    "postdeploy"  : "git push && git push --tags"
   },
   "author"       : "themadcreator@github",
   "license"      : "Apache-2.0",
@@ -18,9 +20,9 @@
     "omggif": "1.0.x"
   },
   "devDependencies": {
+    "ast-types"         : "0.8.13",
     "browserify"        : "11.x.x",
     "coffeeify"         : "1.x.x",
-    "uglify-js"         : "2.x.x",
     "metalsmith"        : "2.1.0",
     "metalsmith-assets" : "0.1.0",
     "metalsmith-ignore" : "0.1.2",
@@ -28,6 +30,7 @@
     "metalsmith-less"   : "2.0.0",
     "metalsmith-raw"    : "0.2.0",
     "metalsmith-serve"  : "0.0.4",
-    "metalsmith-watch"  : "1.0.1"
+    "metalsmith-watch"  : "1.0.1",
+    "uglify-js"         : "2.x.x"
   }
 }

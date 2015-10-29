@@ -3,41 +3,40 @@
 # http://www.w3.org/Graphics/GIF/spec-gif89a.txt
 
 ###
-Load and animate the gif.
-
-Arguments:
-  url      - The URL of the gif to be loaded with an XMLHttpRequest.
-  callback - Predicate argument than can be any one of the following:
-              - function - called with a new instance of Animator
-              - string - a query selector for a canvas element
-              - canvas - a canvas element
+---
+d: 'Returns a gifler API instance object'
+---
 ###
 gifler = (url) ->
   # Prepare XHR
   xhr = new XMLHttpRequest()
   xhr.open('GET', url, aync = true)
   xhr.responseType = 'arraybuffer'
+  return new Api(xhr)
 
-  return {
-    xhr
-    get : (callback) ->
-      xhr.onload = wrapXhrCallback(callback)
-      xhr.send()
-      return @
-    animate : (selector) ->
-      canvas = getCanvasElement(selector)
-      xhr.onload = wrapXhrCallback((animator) -> return animator.animateInCanvas(canvas))
-      xhr.send()
-      return @
-    frames : (selector, onDrawFrame, setCanvasDimesions = false) ->
-      canvas = getCanvasElement(selector)
-      xhr.onload = wrapXhrCallback((animator) ->
-        animator.onDrawFrame = onDrawFrame
-        return animator.animateInCanvas(canvas, setCanvasDimesions)
-      )
-      xhr.send()
-      return @
-  }
+class Api
+  constuctor : (@xhr) ->
+
+  get : (callback) ->
+    @xhr.onload = wrapXhrCallback(callback)
+    @xhr.send()
+    return @
+
+  animate : (selector) ->
+    canvas = getCanvasElement(selector)
+    @xhr.onload = wrapXhrCallback((animator) -> return animator.animateInCanvas(canvas))
+    @xhr.send()
+    return @
+
+  frames : (selector, onDrawFrame, setCanvasDimesions = false) ->
+    canvas = getCanvasElement(selector)
+    @xhr.onload = wrapXhrCallback((animator) ->
+      animator.onDrawFrame = onDrawFrame
+      return animator.animateInCanvas(canvas, setCanvasDimesions)
+    )
+    @xhr.send()
+    return @
+
 
 wrapXhrCallback = (callback) ->
   return (e) -> callback new Animator(new GifReader(new Uint8Array(@response)))

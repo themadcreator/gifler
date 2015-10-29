@@ -18,18 +18,17 @@ block style
   link(rel="stylesheet" href="index.css")
 
 mixin example(example)
-  //- header label
+  //- header label and flavor
   .block
     h2 #{example.title}
     .flavor !{example.description}
 
-  //- canvas
+  //- canvas with actual script
   .canvas-wrapper: canvas(class="#{example.key}")
   script !{raw(example.source)}
 
   //- code block
   .block: pre: code(class="#{example.key}").javascript #{raw(example.source)}
-
 
 block hero
   .hero.row

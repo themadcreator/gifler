@@ -783,21 +783,16 @@ function GifReaderLZWOutputIndexStream(code_stream, p, output, output_length) {
 try { exports.GifWriter = GifWriter; exports.GifReader = GifReader } catch(e) { }  // CommonJS.
 
 },{}],2:[function(require,module,exports){
-var Animator, GifReader, createBufferCanvas, decodeFrames, getCanvasElement, gifler, wrapXhrCallback,
+var Animator, Api, GifReader, createBufferCanvas, decodeFrames, getCanvasElement, gifler, wrapXhrCallback,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 GifReader = require('omggif').GifReader;
 
 
 /*
-Load and animate the gif.
-
-Arguments:
-  url      - The URL of the gif to be loaded with an XMLHttpRequest.
-  callback - Predicate argument than can be any one of the following:
-              - function - called with a new instance of Animator
-              - string - a query selector for a canvas element
-              - canvas - a canvas element
+---
+d: 'Returns a gifler API instance object'
+---
  */
 
 gifler = function(url) {
@@ -805,37 +800,49 @@ gifler = function(url) {
   xhr = new XMLHttpRequest();
   xhr.open('GET', url, aync = true);
   xhr.responseType = 'arraybuffer';
-  return {
-    xhr: xhr,
-    get: function(callback) {
-      xhr.onload = wrapXhrCallback(callback);
-      xhr.send();
-      return this;
-    },
-    animate: function(selector) {
-      var canvas;
-      canvas = getCanvasElement(selector);
-      xhr.onload = wrapXhrCallback(function(animator) {
-        return animator.animateInCanvas(canvas);
-      });
-      xhr.send();
-      return this;
-    },
-    frames: function(selector, onDrawFrame, setCanvasDimesions) {
-      var canvas;
-      if (setCanvasDimesions == null) {
-        setCanvasDimesions = false;
-      }
-      canvas = getCanvasElement(selector);
-      xhr.onload = wrapXhrCallback(function(animator) {
-        animator.onDrawFrame = onDrawFrame;
-        return animator.animateInCanvas(canvas, setCanvasDimesions);
-      });
-      xhr.send();
-      return this;
-    }
-  };
+  return new Api(xhr);
 };
+
+Api = (function() {
+  function Api() {}
+
+  Api.prototype.constuctor = function(xhr1) {
+    this.xhr = xhr1;
+  };
+
+  Api.prototype.get = function(callback) {
+    this.xhr.onload = wrapXhrCallback(callback);
+    this.xhr.send();
+    return this;
+  };
+
+  Api.prototype.animate = function(selector) {
+    var canvas;
+    canvas = getCanvasElement(selector);
+    this.xhr.onload = wrapXhrCallback(function(animator) {
+      return animator.animateInCanvas(canvas);
+    });
+    this.xhr.send();
+    return this;
+  };
+
+  Api.prototype.frames = function(selector, onDrawFrame, setCanvasDimesions) {
+    var canvas;
+    if (setCanvasDimesions == null) {
+      setCanvasDimesions = false;
+    }
+    canvas = getCanvasElement(selector);
+    this.xhr.onload = wrapXhrCallback(function(animator) {
+      animator.onDrawFrame = onDrawFrame;
+      return animator.animateInCanvas(canvas, setCanvasDimesions);
+    });
+    this.xhr.send();
+    return this;
+  };
+
+  return Api;
+
+})();
 
 wrapXhrCallback = function(callback) {
   return function(e) {
