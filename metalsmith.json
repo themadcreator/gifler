@@ -16,13 +16,21 @@
       "source"      : "site/assets",
       "destination" : "assets"
     },
-    "metalsmith-raw" : true,
-    "./metalsmith-comment-docs.js"  : {
+    "metalsmith-raw"  : true,
+    "./metalsmith-comment-docs"  : {
       "docs" : "./gifler.bare.js"
     },
     "metalsmith-jade" : {
       "pretty"      : true,
       "useMetadata" : true
+    },
+    "metalsmith-serve" : {
+      "port" : 9000
+    },
+    "metalsmith-watch" : {
+      "paths" : {
+        "${source}/**/*" : "**/*"
+      }
     }
   }
 }
