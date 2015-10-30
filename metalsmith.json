@@ -17,7 +17,7 @@
       "destination" : "assets"
     },
     "metalsmith-raw"  : true,
-    "./metalsmith-comment-docs"  : {
+    "metalsmith-comment-yaml" : {
       "docs" : "./gifler.bare.js"
     },
     "metalsmith-jade" : {
