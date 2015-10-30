@@ -21,8 +21,8 @@
       <div class="content"><a name="gifler()" href="#gifler()">
           <h2>gifler()</h2></a>
         <p class="text">This is the main entrypoint to the library.</p>
-        <p class="text">Prepares an XHR request to load the GIF file.</p>
-        <p class="text">Returns an API instance for interacting with the library.</p>
+        <p class="text">Prepares and sends an XHR request to load the GIF file.</p>
+        <p class="text">Returns a <b>Gif</b> instance for interacting with the library.</p>
         <h4>Arguments</h4>
         <table class="arguments">
           <tr>
@@ -30,9 +30,10 @@
             <td class="desc">URL to .gif file</td>
           </tr>
         </table>
-        <h4><span>Returns</span> a gifler Api instance object</h4><a name="api.animate()" href="#api.animate()">
-          <h2>api.animate()</h2></a>
-        <p class="text">Renders the loaded GIF into the canvas matching the timing and effects of using and img tag.
+        <h4>Returns</h4>
+        <p class="returns">a Gif instance object</p><a name="gif.animate()" href="#gif.animate()">
+          <h2>gif.animate()</h2></a>
+        <p class="text">Animates the loaded GIF, drawing each frame into the canvas. This matches the look of an &lt;img&gt; tag.
 </p>
         <h4>Arguments</h4>
         <table class="arguments">
@@ -40,8 +41,8 @@
             <td class="name">selector</td>
             <td class="desc">A &lt;canvas&gt; element or query selector for a &lt;canvas&gt; element.</td>
           </tr>
-        </table><a name="api.frames()" href="#api.frames()">
-          <h2>api.frames()</h2></a>
+        </table><a name="gif.frames()" href="#gif.frames()">
+          <h2>gif.frames()</h2></a>
         <p class="text">Runs the animation on the loaded GIF, but passes the canvas context and GIF frame to the <b>onDrawFrame</b> callback for rendering.
 </p>
         <p class="text">This gives you complete control of how the frame is drawn into the canvas context.
@@ -57,18 +58,61 @@
             <td class="desc">A callback that will be invoked when each frame should be drawn into the canvas. see Animator.onDrawFrame.</td>
           </tr>
           <tr>
-            <td class="name">setCanvasDimesions</td>
-            <td class="desc">OPTIONAL. If true, the canvas's size will be set to the dimension of the loaded GIF. default: false.</td>
+            <td class="name">setDimesions</td>
+            <td class="desc">OPTIONAL. If true, the canvas's width/height will be set to the dimension of the loaded GIF. default: false.</td>
           </tr>
-        </table><a name="api.get()" href="#api.get()">
-          <h2>api.get()</h2></a>
-        <p class="text">To get even more control, and for your convenience, this method allows you to access gifler's Animator object. The animator will be in an unstarted state, but can be started with a call to <b>animator.animateInCanvas()</b>
+        </table><a name="gif.get()" href="#gif.get()">
+          <h2>gif.get()</h2></a>
+        <p class="text">To get even more control, and for your convenience, this method returns a promise that will be fulfilled with an <b>Animator</b> instance. The animator will be in an unstarted state, but can be started with a call to <b>animator.animateInCanvas()</b>
+</p><a name="animator::createBufferCanvas()" href="#animator::createBufferCanvas()">
+          <h2>animator::createBufferCanvas()</h2></a>
+        <p class="text">Creates a buffer canvas element since it is much faster to call <b>.putImage()</b> than <b>.putImageData()</b>.
+</p>
+        <p class="text">The omggif library decodes the pixels into the full gif dimensions. We only need to store the frame dimensions, so we offset the putImageData call.
 </p>
         <h4>Arguments</h4>
         <table class="arguments">
           <tr>
-            <td class="name">callback</td>
-            <td class="desc">A function which takes as its argument a gifler Animator instance object</td>
+            <td class="name">frame</td>
+            <td class="desc">A frame of the GIF (from the omggif library)</td>
+          </tr>
+          <tr>
+            <td class="name">width</td>
+            <td class="desc">width of the GIF (not the frame)</td>
+          </tr>
+          <tr>
+            <td class="name">height</td>
+            <td class="desc">height of the GIF</td>
+          </tr>
+        </table>
+        <h4>Returns</h4>
+        <p class="returns">A &lt;canvas&gt; element containing the frame's image.</p><a name="animator.start()" href="#animator.start()">
+          <h2>animator.start()</h2></a>
+        <p class="text">Starts running the GIF animation loop.</p><a name="animator.stop()" href="#animator.stop()">
+          <h2>animator.stop()</h2></a>
+        <p class="text">Stops running the GIF animation loop.</p><a name="animator.reset()" href="#animator.reset()">
+          <h2>animator.reset()</h2></a>
+        <p class="text">Resets the animation loop to the first frame.</p>
+        <p class="text">Does not stop the animation from running.</p><a name="animator.running()" href="#animator.running()">
+          <h2>animator.running()</h2></a>
+        <h4>Returns</h4>
+        <p class="returns">A boolean indicating whether or not the animation is running.</p><a name="animator.animateInCanvas()" href="#animator.animateInCanvas()">
+          <h2>animator.animateInCanvas()</h2></a>
+        <p class="text">This method prepares the canvas to be drawn into and sets up the callbacks for each frame while the animation is running.
+</p>
+        <p class="text">To change how each frame is drawn into the canvas, override <b>animator.onDrawFrame()</b> before calling this method. If <b>animator.onDrawFrame()</b> is not set, we simply draw the frame directly into the canvas as is.
+</p>
+        <p class="text">You may also override <b>animator.onFrame()</b> before calling this method. onFrame handles the lazy construction of canvas buffers for each frame as well as the disposal method for each frame.
+</p>
+        <h4>Arguments</h4>
+        <table class="arguments">
+          <tr>
+            <td class="name">canvas</td>
+            <td class="desc">A canvas element.</td>
+          </tr>
+          <tr>
+            <td class="name">setDimensions</td>
+            <td class="desc">OPTIONAL. If true, the canvas width/height will be set to match the GIF. default: true.</td>
           </tr>
         </table>
       </div>
