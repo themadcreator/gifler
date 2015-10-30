@@ -7,9 +7,9 @@ h2 {
   margin-bottom: 10px;
 }
 h4 {
-  font-weight: 700 ;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  font-weight: 700;
+  margin-top: 30px;
+  margin-bottom: 20px;
 }
 p.text {
   line-height: 1.2em;
@@ -20,10 +20,10 @@ table.arguments {
   table-layout: fixed;
 }
 table.arguments td {
-  padding: 10px 20px;
+  padding: 10px 15px;
   border: 1px solid #DDD;
   vertical-align: top;
 }
 table.arguments td.name {
-  width: 140px;
+  width: 110px;
 }

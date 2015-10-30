@@ -20,7 +20,8 @@ mixin documentation(doc)
           td.desc #{description}
 
   - if(doc.return)
-    h4 #[span Returns] #{doc.return}
+    h4 Returns
+    p.returns #{doc.return}
 
 block content
   for doc in docs

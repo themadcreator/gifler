@@ -18,7 +18,8 @@
   "author"       : "themadcreator@github",
   "license"      : "Apache-2.0",
   "dependencies" : {
-    "omggif" : "1.0.x"
+    "bluebird" : "3.0.2",
+    "omggif"   : "1.0.x"
   },
   "devDependencies": {
     "ast-types"         : "0.8.13",

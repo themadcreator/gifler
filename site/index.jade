@@ -3,19 +3,30 @@ examples :
   -
     title       : 'Hello, Gifler!'
     key         : 'running-pikachu'
-    description : 'Getting started is easy! Just call the gifler function to load a GIF. Then run the animation in a canvas using the <b>.animate()</b> method. The method <b>.animate()</b> accepts a canvas DOM element or a string selector to a canvas element.'
+    description : >
+      Getting started is easy! Just call the gifler function to load a GIF. Then run the animation in a canvas using the <b>.animate()</b> method. The method <b>.animate()</b> accepts a canvas DOM element or a string selector to a canvas element.
     source      : '_examples/simple.js'
   -
     title       : 'Custom Rendering'
     key         : 'rainbow-pikachus'
-    description : 'Gifler makes it easy to manipulate the underlying frames from the GIF. Just call the <b>.frames()</b> method with a canvas selector and a callback that will be called when each frame should be renderd. Gifler handles all the timing calculations and GIF transition logic. Just put the pixels you want to see into the canvas.'
+    description : >
+      Gifler makes it easy to manipulate the underlying frames from the GIF. Just call the <b>.frames()</b> method with a canvas selector and a callback that will be called when each frame should be renderd. Gifler handles all the timing calculations and GIF transition logic. Just put the pixels you want to see into the canvas.
     source      : '_examples/rainbow.js'
+  -
+    title       : 'Play/Pause Control'
+    key         : 'play-pause'
+    description : >
+      With access to Gifler''s animator, you can stop and start the animation with ease. When running, the animator will automatically compensate for canvas render time when computing when to draw the next GIF frame.
+      <br/><br/>
+      Try clicking the animation below to start/stop it.
+    source      : '_examples/control.js'
 ---
 
 extend _layout.jade
 
 block style
   link(rel="stylesheet" href="index.css")
+  script(type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js")
 
 mixin example(example)
   //- header label and flavor

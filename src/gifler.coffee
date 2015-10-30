@@ -1,4 +1,5 @@
 {GifReader} = require 'omggif'
+Promise     = require 'bluebird'
 
 # For more on the file format for GIFs
 # http://www.w3.org/Graphics/GIF/spec-gif89a.txt
@@ -7,39 +8,54 @@
 head : 'gifler()'
 text :
   - This is the main entrypoint to the library.
-  - Prepares an XHR request to load the GIF file.
-  - Returns an API instance for interacting with the library.
+  - Prepares and sends an XHR request to load the GIF file.
+  - Returns a <b>Gif</b> instance for interacting with the library.
 args : 
   url : 'URL to .gif file'
-return : 'a gifler Api instance object'
+return : 'a Gif instance object'
 ###
 gifler = (url) ->
   # Prepare XHR
   xhr = new XMLHttpRequest()
   xhr.open('GET', url, aync = true)
   xhr.responseType = 'arraybuffer'
-  return new Api(xhr)
 
-class Api
-  constructor : (@xhr) ->
+  promise = new Promise((resolve, reject) ->
+    xhr.onload = (e) -> resolve(@response)
+  )
+  xhr.send()
+  return new Gif(promise)
+
+class Gif
+  @getCanvasElement : (selector) ->
+    if typeof selector is 'string' and (element = document.querySelector(selector))?.tagName is 'CANVAS'
+      return element
+    else if selector?.tagName is 'CANVAS'
+      return selector
+    else
+      throw new Error('Unexpected selector type. Valid types are query-selector-string/canvas-element')
+
+  constructor : (dataPromise) ->
+    @_animatorPromise = dataPromise.then (data) ->
+      reader = new GifReader(new Uint8Array(data))
+      return Decoder.decodeFramesAsync(reader).then (frames) ->
+        return new Animator(reader, frames)
 
   ###---
-  head : 'api.animate()'
+  head : 'gif.animate()'
   text :
     - >
-      Renders the loaded GIF into the canvas matching
-      the timing and effects of using and img tag.
+      Animates the loaded GIF, drawing each frame into the canvas.
+      This matches the look of an &lt;img&gt; tag.
   args : 
     selector : 'A <canvas> element or query selector for a <canvas> element.'
   ###
   animate : (selector) ->
-    canvas = getCanvasElement(selector)
-    @xhr.onload = wrapXhrCallback((animator) -> return animator.animateInCanvas(canvas))
-    @xhr.send()
-    return @
+    canvas = Gif.getCanvasElement(selector)
+    return @_animatorPromise.then (animator) -> animator.animateInCanvas(canvas)
 
   ###---
-  head : 'api.frames()'
+  head : 'gif.frames()'
   text :
     - >
       Runs the animation on the loaded GIF, but passes the
@@ -49,88 +65,90 @@ class Api
       This gives you complete control of how the frame is drawn
       into the canvas context.
   args : 
-    selector           : 'A <canvas> element or query selector for a <canvas> element.'
-    onDrawFrame        : 'A callback that will be invoked when each frame should be drawn into the canvas. see Animator.onDrawFrame.'
-    setCanvasDimesions : 'OPTIONAL. If true, the canvas''s size will be set to the dimension of the loaded GIF. default: false.'
+    selector     : 'A <canvas> element or query selector for a <canvas> element.'
+    onDrawFrame  : 'A callback that will be invoked when each frame should be drawn into the canvas. see Animator.onDrawFrame.'
+    setDimesions : 'OPTIONAL. If true, the canvas''s width/height will be set to the dimension of the loaded GIF. default: false.'
   ###
   frames : (selector, onDrawFrame, setCanvasDimesions = false) ->
-    canvas = getCanvasElement(selector)
-    @xhr.onload = wrapXhrCallback((animator) ->
+    canvas = Gif.getCanvasElement(selector)
+    return @_animatorPromise.then (animator) ->
       animator.onDrawFrame = onDrawFrame
-      return animator.animateInCanvas(canvas, setCanvasDimesions)
-    )
-    @xhr.send()
-    return @
+      animator.animateInCanvas(canvas, setCanvasDimesions)
 
   ###---
-  head : 'api.get()'
+  head : 'gif.get()'
   text :
     - >
       To get even more control, and for your convenience,
-      this method allows you to access gifler's Animator
-      object. The animator will be in an unstarted state,
+      this method returns a promise that will be fulfilled with
+      an <b>Animator</b> instance. The animator will be in an unstarted state,
       but can be started with a call to <b>animator.animateInCanvas()</b>
-  args : 
-    callback : 'A function which takes as its argument a gifler Animator instance object'
   ###
   get : (callback) ->
-    @xhr.onload = wrapXhrCallback(callback)
-    @xhr.send()
-    return @
-
-wrapXhrCallback = (callback) ->
-  return (e) -> callback new Animator(new GifReader(new Uint8Array(@response)))
-
-getCanvasElement = (selector) ->
-  if typeof selector is 'string' and (element = document.querySelector(selector))?.tagName is 'CANVAS'
-    return element
-  else if selector?.tagName is 'CANVAS'
-    return selector
-  else
-    throw new Error('Unexpected selector type. Valid types are query-selector-string/canvas-element')
+    return @_animatorPromise
 
 ###
-Creates a buffer canvas element since it is much faster to putImage than
-putImageData.
-
-The omggif library decodes the pixels into the full gif dimensions. We only
-need to store the frame dimensions, so we offset the putImageData call.
+These methods decode the pixels for each frame (decompressing and de-interlacing)
+into a Uint8ClampedArray, which is suitable for canvas ImageData.
 ###
-createBufferCanvas = (frame, width, height) ->
-  # Create empty buffer
-  bufferCanvas        = document.createElement('canvas')
-  bufferContext       = bufferCanvas.getContext('2d')
-  bufferCanvas.width  = frame.width
-  bufferCanvas.height = frame.height
+class Decoder
+  @decodeFramesSync : (reader) ->
+    return [0...reader.numFrames()].map (frameIndex) ->
+      return Decoder.decodeFrame(reader, frameIndex)
 
-  # Create image date from pixels
-  imageData = bufferContext.createImageData(width, height)
-  imageData.data.set(frame.pixels)
+  @decodeFramesAsync : (reader) ->
+    return Promise.map([0...reader.numFrames()], ((i) -> Decoder.decodeFrame(reader, i)), concurrency = 1)
 
-  # Fill canvas with image data
-  bufferContext.putImageData(imageData, -frame.x, -frame.y)
-  return bufferCanvas
-
-###
-Decodes the pixels for each frame (decompressing and de-interlacing) into a
-Uint8ClampedArray, which is suitable for canvas ImageData.
-###
-decodeFrames = (reader, frameIndex) ->
-  return [0...reader.numFrames()].map (frameIndex) =>
+  @decodeFrame : (reader, frameIndex) ->
     frameInfo = reader.frameInfo(frameIndex)
     frameInfo.pixels = new Uint8ClampedArray(reader.width * reader.height * 4)
     reader.decodeAndBlitFrameRGBA(frameIndex, frameInfo.pixels)
     return frameInfo
 
 class Animator
-  constructor : (@_reader) ->
+  ###---
+  head : 'animator::createBufferCanvas()'
+  text :
+    - >
+      Creates a buffer canvas element since it is much faster
+      to call <b>.putImage()</b> than <b>.putImageData()</b>.
+    - >
+      The omggif library decodes the pixels into the full gif
+      dimensions. We only need to store the frame dimensions,
+      so we offset the putImageData call.
+  args :
+    frame  : A frame of the GIF (from the omggif library)
+    width  : width of the GIF (not the frame)
+    height : height of the GIF
+  return : A <canvas> element containing the frame's image.
+  ###
+  @createBufferCanvas : (frame, width, height) ->
+    # Create empty buffer
+    bufferCanvas        = document.createElement('canvas')
+    bufferContext       = bufferCanvas.getContext('2d')
+    bufferCanvas.width  = frame.width
+    bufferCanvas.height = frame.height
+
+    # Create image date from pixels
+    imageData = bufferContext.createImageData(width, height)
+    imageData.data.set(frame.pixels)
+
+    # Fill canvas with image data
+    bufferContext.putImageData(imageData, -frame.x, -frame.y)
+    return bufferCanvas
+
+  constructor : (@_reader, @_frames) ->
     {@width, @height} = @_reader
-    @_frames     = decodeFrames(@_reader)
     @_loopCount  = @_reader.loopCount()
     @_loops      = 0
     @_frameIndex = 0
     @_running    = false
 
+  ###---
+  head : 'animator.start()'
+  text :
+    - Starts running the GIF animation loop.
+  ###
   start : ->
     @_lastTime = new Date().valueOf()
     @_delayCompensation = 0
@@ -139,14 +157,32 @@ class Animator
     setTimeout(@_nextFrame, 0)
     return @
 
+  ###---
+  head : 'animator.stop()'
+  text :
+    - Stops running the GIF animation loop.
+  ###
   stop : ->
     @_running = false
     return @
 
+  ###---
+  head : 'animator.reset()'
+  text :
+    - Resets the animation loop to the first frame.
+    - Does not stop the animation from running.
+  ###
   reset : ->
     @_frameIndex = 0
     @_loops = 0
     return @
+
+  ###---
+  head : 'animator.running()'
+  return : A boolean indicating whether or not the animation is running.
+  ###
+  running : ->
+    return @_running
 
   _nextFrame : =>
     requestAnimationFrame(@_nextFrameRender)
@@ -200,8 +236,27 @@ class Animator
         break
     return
 
-  animateInCanvas : (canvas, setDimension = true) ->
-    if setDimension
+  ###---
+  head : 'animator.animateInCanvas()'
+  text :
+    - >
+      This method prepares the canvas to be drawn into and sets up
+      the callbacks for each frame while the animation is running.
+    - >
+      To change how each frame is drawn into the canvas, override
+      <b>animator.onDrawFrame()</b> before calling this method.
+      If <b>animator.onDrawFrame()</b> is not set, we simply draw
+      the frame directly into the canvas as is.
+    - >
+      You may also override <b>animator.onFrame()</b> before calling
+      this method. onFrame handles the lazy construction of canvas
+      buffers for each frame as well as the disposal method for each frame.
+  args :
+    canvas        : A canvas element.
+    setDimensions : 'OPTIONAL. If true, the canvas width/height will be set to match the GIF. default: true.'
+  ###
+  animateInCanvas : (canvas, setDimensions = true) ->
+    if setDimensions
       canvas.width  = @width
       canvas.height = @height
 
@@ -212,7 +267,7 @@ class Animator
 
     @onFrame ?= (frame, i) =>
       # Lazily create canvas buffer.
-      frame.buffer ?= createBufferCanvas(frame, @width, @height)
+      frame.buffer ?= Animator.createBufferCanvas(frame, @width, @height)
 
       # Handle frame disposal.
       @disposeFrame?()
@@ -232,10 +287,10 @@ class Animator
     @start()
     return @
 
-# Return gifler function as main entry point
-gifler.Animator           = Animator
-gifler.decodeFrames       = decodeFrames
-gifler.createBufferCanvas = createBufferCanvas
+# Attach classes to API function
+gifler.Gif      = Gif
+gifler.Decoder  = Decoder
+gifler.Animator = Animator
 
 # Export
 window?.gifler  = gifler

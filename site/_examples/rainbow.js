@@ -23,6 +23,6 @@ function onDrawFrame(ctx, frame) {
   frames++;
 }
 
-// Load and parse the GIF, returning an Animator
+// Load the GIF, set custom frame render function
 gifler('assets/gif/run.gif')
   .frames('canvas.rainbow-pikachus', onDrawFrame);

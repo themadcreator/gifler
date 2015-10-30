@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="assets/lib/monokai_sublime.css">
     <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="index.css">
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="assets/gifler.js"></script>
     <script type="text/javascript" src="assets/lib/highlight.pack.js"></script>
     <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
@@ -26,7 +27,8 @@
       <div class="content">
         <div class="block">
           <h2>Hello, Gifler!</h2>
-          <div class="flavor">Getting started is easy! Just call the gifler function to load a GIF. Then run the animation in a canvas using the <b>.animate()</b> method. The method <b>.animate()</b> accepts a canvas DOM element or a string selector to a canvas element.</div>
+          <div class="flavor">Getting started is easy! Just call the gifler function to load a GIF. Then run the animation in a canvas using the <b>.animate()</b> method. The method <b>.animate()</b> accepts a canvas DOM element or a string selector to a canvas element.
+</div>
         </div>
         <div class="canvas-wrapper">
           <canvas class="running-pikachu"></canvas>
@@ -37,7 +39,8 @@
         </div>
         <div class="block">
           <h2>Custom Rendering</h2>
-          <div class="flavor">Gifler makes it easy to manipulate the underlying frames from the GIF. Just call the <b>.frames()</b> method with a canvas selector and a callback that will be called when each frame should be renderd. Gifler handles all the timing calculations and GIF transition logic. Just put the pixels you want to see into the canvas.</div>
+          <div class="flavor">Gifler makes it easy to manipulate the underlying frames from the GIF. Just call the <b>.frames()</b> method with a canvas selector and a callback that will be called when each frame should be renderd. Gifler handles all the timing calculations and GIF transition logic. Just put the pixels you want to see into the canvas.
+</div>
         </div>
         <div class="canvas-wrapper">
           <canvas class="rainbow-pikachus"></canvas>
@@ -67,7 +70,7 @@ function onDrawFrame(ctx, frame) {
   frames++;
 }
 
-// Load and parse the GIF, returning an Animator
+// Load the GIF, set custom frame render function
 gifler('assets/gif/run.gif')
   .frames('canvas.rainbow-pikachus', onDrawFrame);</script>
         <div class="block">
@@ -96,9 +99,41 @@ function onDrawFrame(ctx, frame) {
   frames++;
 }
 
-// Load and parse the GIF, returning an Animator
+// Load the GIF, set custom frame render function
 gifler('assets/gif/run.gif')
   .frames('canvas.rainbow-pikachus', onDrawFrame);</code></pre>
+        </div>
+        <div class="block">
+          <h2>Play/Pause Control</h2>
+          <div class="flavor">With access to Gifler''s animator, you can stop and start the animation with ease. When running, the animator will automatically compensate for canvas render time when computing when to draw the next GIF frame. <br/><br/> Try clicking the animation below to start/stop it.
+</div>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas class="play-pause"></canvas>
+        </div>
+        <script>gifler('assets/gif/run.gif')
+  .animate('canvas.play-pause')
+  .then(function(animator) {
+    $('canvas.play-pause').click(function(){
+      if(animator.running()){
+        animator.stop();
+      } else {
+        animator.start();
+      }
+    });
+  });</script>
+        <div class="block">
+          <pre><code class="play-pause javascript">gifler('assets/gif/run.gif')
+  .animate('canvas.play-pause')
+  .then(function(animator) {
+    $('canvas.play-pause').click(function(){
+      if(animator.running()){
+        animator.stop();
+      } else {
+        animator.start();
+      }
+    });
+  });</code></pre>
         </div>
         <div class="tech-icons"><span title="CoffeeScript" class="devicons devicons-coffeescript"></span><span title="Javascript" class="devicons devicons-javascript_badge"></span><span title="less" class="devicons devicons-less"></span><span title="npm" class="devicons devicons-npm"></span></div>
       </div>
