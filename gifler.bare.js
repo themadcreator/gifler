@@ -369,7 +369,7 @@ Animator = (function() {
             default:
               _this.disposeFrame = null;
           }
-          return (ref = _this.onDrawFrame) != null ? ref.apply(_this, [ctx, frame, i]) : void 0;
+          return (ref = _this.onDrawFrame) != null ? ref.apply(_this, [ctx, frame, i, _this]) : void 0;
         };
       })(this);
     }

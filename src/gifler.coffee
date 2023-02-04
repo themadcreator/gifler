@@ -281,7 +281,7 @@ class Animator
           @disposeFrame = null
 
       # Draw current frame.
-      @onDrawFrame?.apply(@, [ctx, frame, i])
+      @onDrawFrame?.apply(@, [ctx, frame, i, @])
 
     # Start animation.
     @start()

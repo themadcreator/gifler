@@ -370,7 +370,7 @@ Animator = (function() {
             default:
               _this.disposeFrame = null;
           }
-          return (ref = _this.onDrawFrame) != null ? ref.apply(_this, [ctx, frame, i]) : void 0;
+          return (ref = _this.onDrawFrame) != null ? ref.apply(_this, [ctx, frame, i, _this]) : void 0;
         };
       })(this);
     }
@@ -396,7 +396,7 @@ if (typeof module !== "undefined" && module !== null) {
   module.exports = gifler;
 }
 
-},{"bluebird":2,"omggif":4}],2:[function(require,module,exports){
+},{"bluebird":2,"omggif":3}],2:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -5646,100 +5646,7 @@ module.exports = ret;
 },{"./es5":13}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":3}],3:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],4:[function(require,module,exports){
+},{"_process":4}],3:[function(require,module,exports){
 // (c) Dean McNamee <dean@gmail.com>, 2013.
 //
 // https://github.com/deanm/omggif
@@ -5766,6 +5673,8 @@ process.umask = function() { return 0; };
 // including animation and compression.  It does not rely on any specific
 // underlying system, so should run in the browser, Node, or Plask.
 
+"use strict";
+
 function GifWriter(buf, width, height, gopts) {
   var p = 0;
 
@@ -5774,12 +5683,14 @@ function GifWriter(buf, width, height, gopts) {
   var global_palette = gopts.palette === undefined ? null : gopts.palette;
 
   if (width <= 0 || height <= 0 || width > 65535 || height > 65535)
-    throw "Width/Height invalid."
+    throw new Error("Width/Height invalid.");
 
   function check_palette_and_num_colors(palette) {
     var num_colors = palette.length;
-    if (num_colors < 2 || num_colors > 256 ||  num_colors & (num_colors-1))
-      throw "Invalid code/color length, must be power of 2 and 2 .. 256.";
+    if (num_colors < 2 || num_colors > 256 ||  num_colors & (num_colors-1)) {
+      throw new Error(
+          "Invalid code/color length, must be power of 2 and 2 .. 256.");
+    }
     return num_colors;
   }
 
@@ -5797,13 +5708,14 @@ function GifWriter(buf, width, height, gopts) {
     --gp_num_colors_pow2;
     if (gopts.background !== undefined) {
       background = gopts.background;
-      if (background >= gp_num_colors) throw "Background index out of range.";
+      if (background >= gp_num_colors)
+        throw new Error("Background index out of range.");
       // The GIF spec states that a background index of 0 should be ignored, so
       // this is probably a mistake and you really want to set it to another
       // slot in the palette.  But actually in the end most browsers, etc end
       // up ignoring this almost completely (including for dispose background).
       if (background === 0)
-        throw "Background index explicitly passed as 0.";
+        throw new Error("Background index explicitly passed as 0.");
     }
   }
 
@@ -5829,7 +5741,7 @@ function GifWriter(buf, width, height, gopts) {
 
   if (loop_count !== null) {  // Netscape block for looping.
     if (loop_count < 0 || loop_count > 65535)
-      throw "Loop count invalid."
+      throw new Error("Loop count invalid.")
     // Extension code, label, and length.
     buf[p++] = 0x21; buf[p++] = 0xff; buf[p++] = 0x0b;
     // NETSCAPE2.0
@@ -5853,13 +5765,13 @@ function GifWriter(buf, width, height, gopts) {
     // TODO(deanm): Bounds check x, y.  Do they need to be within the virtual
     // canvas width/height, I imagine?
     if (x < 0 || y < 0 || x > 65535 || y > 65535)
-      throw "x/y invalid."
+      throw new Error("x/y invalid.")
 
     if (w <= 0 || h <= 0 || w > 65535 || h > 65535)
-      throw "Width/Height invalid."
+      throw new Error("Width/Height invalid.")
 
     if (indexed_pixels.length < w * h)
-      throw "Not enough pixels for the frame size.";
+      throw new Error("Not enough pixels for the frame size.");
 
     var using_local_palette = true;
     var palette = opts.palette;
@@ -5869,7 +5781,7 @@ function GifWriter(buf, width, height, gopts) {
     }
 
     if (palette === undefined || palette === null)
-      throw "Must supply either a local or global palette.";
+      throw new Error("Must supply either a local or global palette.");
 
     var num_colors = check_palette_and_num_colors(palette);
 
@@ -5895,7 +5807,7 @@ function GifWriter(buf, width, height, gopts) {
     // browsers ignore the background palette index and clear to transparency.
     var disposal = opts.disposal === undefined ? 0 : opts.disposal;
     if (disposal < 0 || disposal > 3)  // 4-7 is reserved.
-      throw "Disposal out of range.";
+      throw new Error("Disposal out of range.");
 
     var use_transparency = false;
     var transparent_index = 0;
@@ -5903,7 +5815,7 @@ function GifWriter(buf, width, height, gopts) {
       use_transparency = true;
       transparent_index = opts.transparent;
       if (transparent_index < 0 || transparent_index >= num_colors)
-        throw "Transparent color index.";
+        throw new Error("Transparent color index.");
     }
 
     if (disposal !== 0 || use_transparency || delay !== 0) {
@@ -5939,6 +5851,8 @@ function GifWriter(buf, width, height, gopts) {
 
     p = GifWriterOutputLZWCodeStream(
             buf, p, min_code_size < 2 ? 2 : min_code_size, indexed_pixels);
+
+    return p;
   };
 
   this.end = function() {
@@ -5948,6 +5862,11 @@ function GifWriter(buf, width, height, gopts) {
     }
     return p;
   };
+
+  this.getOutputBuffer = function() { return buf; };
+  this.setOutputBuffer = function(v) { buf = v; };
+  this.getOutputBufferPosition = function() { return p; };
+  this.setOutputBufferPosition = function(v) { p = v; };
 }
 
 // Main compression routine, palette indexes -> LZW code stream.
@@ -6099,7 +6018,7 @@ function GifReader(buf) {
   // - Header (GIF87a or GIF89a).
   if (buf[p++] !== 0x47 ||            buf[p++] !== 0x49 || buf[p++] !== 0x46 ||
       buf[p++] !== 0x38 || (buf[p++]+1 & 0xfd) !== 0x38 || buf[p++] !== 0x61) {
-    throw "Invalid GIF 87a/89a header.";
+    throw new Error("Invalid GIF 87a/89a header.");
   }
 
   // - Logical Screen Descriptor.
@@ -6113,9 +6032,11 @@ function GifReader(buf) {
   buf[p++];  // Pixel aspect ratio (unused?).
 
   var global_palette_offset = null;
+  var global_palette_size   = null;
 
   if (global_palette_flag) {
     global_palette_offset = p;
+    global_palette_size = num_global_colors;
     p += num_global_colors * 3;  // Seek past palette.
   }
 
@@ -6152,7 +6073,9 @@ function GifReader(buf) {
               p += 12;
               while (true) {  // Seek through subblocks.
                 var block_size = buf[p++];
-                if (block_size === 0) break;
+                // Bad block size (ex: undefined from an out of bounds read).
+                if (!(block_size >= 0)) throw Error("Invalid block size");
+                if (block_size === 0) break;  // 0 size is terminator
                 p += block_size;
               }
             }
@@ -6160,7 +6083,7 @@ function GifReader(buf) {
 
           case 0xf9:  // Graphics Control Extension
             if (buf[p++] !== 0x4 || buf[p+4] !== 0)
-              throw "Invalid graphics extension block.";
+              throw new Error("Invalid graphics extension block.");
             var pf1 = buf[p++];
             delay = buf[p++] | buf[p++] << 8;
             transparent_index = buf[p++];
@@ -6172,14 +6095,17 @@ function GifReader(buf) {
           case 0xfe:  // Comment Extension.
             while (true) {  // Seek through subblocks.
               var block_size = buf[p++];
-              if (block_size === 0) break;
+              // Bad block size (ex: undefined from an out of bounds read).
+              if (!(block_size >= 0)) throw Error("Invalid block size");
+              if (block_size === 0) break;  // 0 size is terminator
               // console.log(buf.slice(p, p+block_size).toString('ascii'));
               p += block_size;
             }
             break;
 
           default:
-            throw "Unknown graphic control label: 0x" + buf[p-1].toString(16);
+            throw new Error(
+                "Unknown graphic control label: 0x" + buf[p-1].toString(16));
         }
         break;
 
@@ -6194,10 +6120,12 @@ function GifReader(buf) {
         var num_local_colors_pow2 = pf2 & 0x7;
         var num_local_colors = 1 << (num_local_colors_pow2 + 1);
         var palette_offset = global_palette_offset;
+        var palette_size = global_palette_size;
         var has_local_palette = false;
         if (local_palette_flag) {
           var has_local_palette = true;
           palette_offset = p;  // Override with local palette.
+          palette_size = num_local_colors;
           p += num_local_colors * 3;  // Seek past palette.
         }
 
@@ -6206,13 +6134,16 @@ function GifReader(buf) {
         p++;  // codesize
         while (true) {
           var block_size = buf[p++];
-          if (block_size === 0) break;
+          // Bad block size (ex: undefined from an out of bounds read).
+          if (!(block_size >= 0)) throw Error("Invalid block size");
+          if (block_size === 0) break;  // 0 size is terminator
           p += block_size;
         }
 
         frames.push({x: x, y: y, width: w, height: h,
                      has_local_palette: has_local_palette,
                      palette_offset: palette_offset,
+                     palette_size: palette_size,
                      data_offset: data_offset,
                      data_length: p - data_offset,
                      transparent_index: transparent_index,
@@ -6226,7 +6157,7 @@ function GifReader(buf) {
         break;
 
       default:
-        throw "Unknown gif block: 0x" + buf[p-1].toString(16);
+        throw new Error("Unknown gif block: 0x" + buf[p-1].toString(16));
         break;
     }
   }
@@ -6241,7 +6172,7 @@ function GifReader(buf) {
 
   this.frameInfo = function(frame_num) {
     if (frame_num < 0 || frame_num >= frames.length)
-      throw "Frame index out of range.";
+      throw new Error("Frame index out of range.");
     return frames[frame_num];
   }
 
@@ -6392,7 +6323,7 @@ function GifReaderLZWOutputIndexStream(code_stream, p, output, output_length) {
   var cur = 0;
 
   var op = 0;  // Output pointer.
-  
+
   var subblock_size = code_stream[p++];
 
   // TODO(deanm): Would using a TypedArray be any faster?  At least it would
@@ -6475,7 +6406,7 @@ function GifReaderLZWOutputIndexStream(code_stream, p, output, output_length) {
     }
 
     var k = chase;
-    
+
     var op_end = op + chase_length + (chase_code !== code ? 1 : 0);
     if (op_end > output_length) {
       console.log("Warning, gif stream longer than expected.");
@@ -6521,6 +6452,193 @@ function GifReaderLZWOutputIndexStream(code_stream, p, output, output_length) {
   return output;
 }
 
-try { exports.GifWriter = GifWriter; exports.GifReader = GifReader } catch(e) { }  // CommonJS.
+// CommonJS.
+try { exports.GifWriter = GifWriter; exports.GifReader = GifReader } catch(e) {}
+
+},{}],4:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 },{}]},{},[1]);

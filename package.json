@@ -1,6 +1,6 @@
 {
   "name"        : "gifler",
-  "version"     : "0.3.0",
+  "version"     : "0.3.1",
   "description" : "Render GIF frames to <canvas>",
   "author"      : "themadcreator@github",
   "license"     : "Apache-2.0",

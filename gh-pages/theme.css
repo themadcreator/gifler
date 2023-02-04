@@ -67,6 +67,8 @@ body > div {
   border-bottom: 5px solid transparent;
   padding: 0px 15px;
 }
+@media only screen and (max-device-width: 400px) {
+}
 .nav-top a:hover {
   border-bottom-color: #eb4d84;
 }
