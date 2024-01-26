@@ -18,6 +18,7 @@ gifler = (url) ->
   # Prepare XHR
   xhr = new XMLHttpRequest()
   xhr.open('GET', url, aync = true)
+  xhr.setRequestHeader('Accept', 'image/gif');
   xhr.responseType = 'arraybuffer'
 
   promise = new Promise((resolve, reject) ->

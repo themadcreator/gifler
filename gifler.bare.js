@@ -22,6 +22,7 @@ gifler = function(url) {
   var aync, promise, xhr;
   xhr = new XMLHttpRequest();
   xhr.open('GET', url, aync = true);
+  xhr.setRequestHeader('Accept', 'image/gif');
   xhr.responseType = 'arraybuffer';
   promise = new Promise(function(resolve, reject) {
     return xhr.onload = function(e) {
