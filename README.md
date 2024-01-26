@@ -1,7 +1,7 @@
 # Gifler
 Animate GIFs in canvas.
 
-- Loads GIF contents with XHR
+- Loads GIF contents with XHR including the header needed for aws
 - Decodes GIF frames and pixels with omggif
 - Prepares canvas buffer for fast rendering
 - Animates each frame and compensates for render delays

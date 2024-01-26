@@ -4,7 +4,7 @@
   "description" : "Render GIF frames to <canvas>",
   "author"      : "themadcreator@github",
   "license"     : "Apache-2.0",
-  "main"        : "gifler.bare.js",
+  "main"        : "gifler.min.js",
   "scripts"     : {
     "compile"     : "./node_modules/.bin/coffee --compile --bare --print src/gifler.coffee > gifler.bare.js",
     "postcompile" : "./node_modules/.bin/browserify gifler.bare.js > gifler.bundle.js",
